@@ -163,7 +163,6 @@ body {
 }
 
 
-
 /* Mídia query para telas menores */
 @media only screen and (max-width: 600px) {
     .bottom-bar button {
