@@ -1,0 +1,190 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.top-bar {
+    background-color: #3498db;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+}
+
+.bottom-bar {
+    background-color: #3498db;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.bottom-bar button {
+    margin: 0 10px;
+    padding: 8px 15px;
+    font-size: 16px;
+    background-color: #fff;
+    color: #3498db;
+    border: none;
+    cursor: pointer;
+}
+
+.bottom-bar button:hover {
+    background-color: #ddd;
+}
+
+/* Adicionando essas regras de estilo */
+
+.main-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-content {
+    width: 47%; /* Ajuste a largura conforme necessário */
+    border-right: 1px solid #3498db; /* Adicionando uma borda à direita */
+    padding-right: 10px; /* Espaçamento para a borda */
+    margin-left: 10px; /* Espaço no início da linha */
+}
+
+
+.right-content {
+    width: 30%; /* Ajuste a largura conforme necessário */
+}
+
+.table-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    text-align: center;
+}
+
+.table-square {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #3498db;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    margin: 15px;
+    margin-top: 100px;
+    margin-left: 20px;
+}
+
+.table-specification {
+    width: 100%; /* Garante que a especificação da mesa ocupe toda a largura */
+}
+
+.table-square.selected {
+    background-color: #ecf0f1; /* Cor de fundo cinza claro quando selecionado */
+}
+
+.top-bar, .bottom-bar {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+.main-content {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.product-form, .product-list {
+    width: 45%;
+}
+
+.product-form {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.product-list {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+.product-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.product-list li {
+    margin-bottom: 10px;
+}
+
+.table-specification {
+    text-align: center;
+}
+
+#consumedItemsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+#consumedItemsTable th, #consumedItemsTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#consumedItemsTable th {
+    background-color: #3498db;
+    color: white;
+}
+
+#totalAmount {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.action-buttons button {
+    margin-top: 10px;
+    padding: 8px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.action-buttons button:hover {
+    background-color: #2980b9;
+}
+
+
+#abrirMesa.aberta {
+    background-color: #4CAF50; /* verde */
+}
+
+
+
+/* Mídia query para telas menores */
+@media only screen and (max-width: 600px) {
+    .bottom-bar button {
+        margin: 5px;
+    }
+
+    .main-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .table-container {
+        justify-content: center;
+    }
+
+    .left-content,
+    .right-content {
+        width: 100%; /* Para ocupar toda a largura em telas menores */
+        border: none; /* Remove a borda nas telas menores */
+        padding: 0; /* Remove o espaçamento nas telas menores */
+        margin: 0; /* Remove o espaçamento nas telas menores */
+    }
+}
+

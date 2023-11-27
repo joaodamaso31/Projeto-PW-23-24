@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Sistema de Gestão de Pedidos</title>
+</head>
+
+<body>
+    <!-- Barra superior -->
+    <div class="top-bar">
+        <h1>ESTSRest - Gestão de Restaurantes</h1>
+        <button onclick="mostrarMesas()">Mesas</button>
+        <button onclick="mostrarProdutos()">Produtos</button>
+        <button onclick="mostrarTiposProdutos()">Tipos de Produtos</button>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="main-content">
+        <!-- Primeira área -->
+        <div class="left-content">
+            <!-- Quadrados numerados -->
+            <div class="table-container" id="mesasContainer">
+                <!-- Adicionando quadrados usando JavaScript -->
+            </div>
+        </div>
+
+        <!-- Segunda área -->
+        <div class="right-content">
+            <!-- Número da Mesa -->
+            <h2 id="mesaNumber" style="text-align: center; margin-bottom: 10px;">Nº da Mesa: </h2>
+
+            <!-- Especificação da mesa -->
+            <div class="table-specification" id="mesaSpecification">
+                <table id="consumedItemsTable">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Preço</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Itens consumidos serão gerados dinamicamente em JavaScript -->
+                    </tbody>
+                </table>
+                <div id="totalAmount">Total: R$ 0.00</div>
+                <div class="action-buttons">
+                    <button onclick="abrirMesa()">Abrir Mesa</button>
+                    <button onclick="editarProdutosConsumidos()">Editar Produtos Consumidos</button>
+                    <button onclick="apagarProdutoConsumido()">Apagar Produto Consumido</button>
+                    <button onclick="fecharMesa()">Fechar Mesa</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra inferior -->
+        <div class="bottom-bar">
+
+        </div>
+
+        <script src="script.js"></script>
+</body>
+
+</html>

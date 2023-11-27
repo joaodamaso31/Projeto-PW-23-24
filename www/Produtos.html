@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Sistema de Gestão de Pedidos</title>
+</head>
+
+<body>
+    <!-- Barra superior -->
+    <div class="top-bar">
+        <h1>ESTSRest - Gestão de Restaurantes</h1>
+        <button onclick="mostrarMesas()">Mesas</button>
+        <button onclick="mostrarProdutos()">Produtos</button>
+        <button onclick="mostrarTiposProdutos()">Tipos de Produtos</button>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="main-content">
+        <!-- Formulário para adicionar produtos -->
+        <div class="product-form">
+            <h2>Adicionar Produto</h2>
+            <label for="productName">Nome do Produto:</label>
+            <input type="text" id="productName" required>
+            <label for="productPrice">Preço do Produto:</label>
+            <input type="number" id="productPrice" required>
+            <button onclick="adicionarProduto()">Adicionar Produto</button>
+        </div>
+
+        <!-- Lista de Produtos -->
+        <div class="product-list">
+            <h2>Lista de Produtos</h2>
+            <ul id="productList">
+                <!-- Lista de produtos será gerada dinamicamente em JavaScript -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Barra inferior -->
+    <div class="bottom-bar">
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
