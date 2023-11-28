@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Sistema de Gestão de Pedidos</title>
+</head>
+<body class="tipo-produtos-page">
+    <!-- Barra superior -->
+    <div class="top-bar">
+        <h1>ESTSRest - Gestão de Restaurantes</h1>
+        <button onclick="mostrarMesas()">Mesas</button>
+        <button onclick="mostrarProdutos()">Produtos</button>
+        <button onclick="mostrarTiposProdutos()">Tipos de Produtos</button>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="main-content">
+        <div id="productTypeContainer">
+            <label for="productType">Escolha o Tipo:</label>
+            <select id="productType" onchange="tipoProdutos()">
+                <option value="fruta">Fruta</option>
+                <option value="vegetal">Vegetal</option>
+                <option value="carne">Carne</option>
+                <!-- Adicione mais opções conforme necessário -->
+            </select>
+        </div>
+    
+        <div id="productListContainer">
+            <h2>Produtos:</h2>
+            <ul id="productList"></ul>
+        </div>
+
+        <div id="productControls">
+            <button onclick="adicionarTipoProduto()">Adicionar Produto</button>
+            <button onclick="editarTipoProduto()">Editar Produto</button>
+            <button onclick="removerTipoProduto()">Remover Produto</button>
+        </div>
+    </div>
+
+    <!-- Barra inferior -->
+    <div class="bottom-bar">
+       
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -4,17 +4,23 @@ let produtos = [];
 //Estado das mesas se estao abertas ou fechadas
 const estadoMesas = {};
 
+const produtosPorTipo = {
+    fruta: ['Maçã', 'Banana', 'Morango'],
+    vegetal: ['Alface', 'Tomate', 'Cenoura'],
+    carne: ['Frango', 'Carne de Porco', 'Carne de Boi']
+    // Adicione mais tipos e produtos conforme necessário
+};
+
 function mostrarMesas() {
     window.location.href = 'mesas.html';
 }
 
 function mostrarProdutos() {
-    //atualizarListaProdutos();
     window.location.href = 'Produtos.html';
 }
 
 function mostrarTiposProdutos() {
-    //window.location.href = 'mesas.html';
+    window.location.href = 'TipoProdutos.html';
 }
 
 // Função para adicionar um produto
@@ -101,7 +107,7 @@ function inicializarQuadrados() {
         // Adiciona um evento de clique para trocar o número da mesa e alterar a cor de fundo
         square.addEventListener('click', function() {
             trocarNumeroMesa(i);
-            selecionarMesa(square);
+            selecionarMesa(square, i);
         });
 
         mesasContainer.appendChild(square);
@@ -188,6 +194,88 @@ function fecharMesa() {
         // Atualiza o estado da mesa para fechada
         estadoMesas[mesaAtual] = false;
     }, 3000);
+}
+
+
+// Função chamada quando a página é carregada
+document.addEventListener('DOMContentLoaded', function() {
+    tipoProdutos();
+});
+
+// Função para atualizar a lista de produtos com base no tipo selecionado
+function tipoProdutos() {
+    const tipoSelecionado = document.getElementById('productType').value;
+    const listaProdutos = produtosPorTipo[tipoSelecionado] || [];
+
+    const productListContainer = document.getElementById('productList');
+    productListContainer.innerHTML = '';
+
+    if (listaProdutos.length > 0) {
+        listaProdutos.forEach(produto => {
+            const listItem = document.createElement('li');
+            listItem.textContent = produto;
+            productListContainer.appendChild(listItem);
+        });
+    } else {
+        const mensagemVazia = document.createElement('p');
+        mensagemVazia.textContent = 'Nenhum produto disponível para este tipo.';
+        productListContainer.appendChild(mensagemVazia);
+    }
+}
+
+// Função para adicionar um novo produto
+function adicionarTipoProduto() {
+    const tipoSelecionado = document.getElementById('productType').value;
+    const novoProduto = prompt('Digite o nome do novo produto:');
+
+    if (novoProduto) {
+        if (!produtosPorTipo[tipoSelecionado]) {
+            produtosPorTipo[tipoSelecionado] = [];
+        }
+
+        produtosPorTipo[tipoSelecionado].push(novoProduto);
+        tipoProdutos();
+    }
+}
+
+// Função para editar um produto existente
+function editarTipoProduto() {
+    const tipoSelecionado = document.getElementById('productType').value;
+    const listaProdutos = produtosPorTipo[tipoSelecionado] || [];
+
+    if (listaProdutos.length > 0) {
+        const produtoParaEditar = prompt('Escolha um produto para editar:\n' + listaProdutos.join(', '));
+
+        if (produtoParaEditar && listaProdutos.includes(produtoParaEditar)) {
+            const novoNomeProduto = prompt('Digite o novo nome para ' + produtoParaEditar + ':');
+
+            if (novoNomeProduto) {
+                const indexProduto = listaProdutos.indexOf(produtoParaEditar);
+                produtosPorTipo[tipoSelecionado][indexProduto] = novoNomeProduto;
+                tipoProdutos();
+            }
+        }
+    } else {
+        alert('Não há produtos para editar.');
+    }
+}
+
+// Função para remover um produto existente
+function removerTipoProduto() {
+    const tipoSelecionado = document.getElementById('productType').value;
+    const listaProdutos = produtosPorTipo[tipoSelecionado] || [];
+
+    if (listaProdutos.length > 0) {
+        const produtoParaRemover = prompt('Escolha um produto para remover:\n' + listaProdutos.join(', '));
+
+        if (produtoParaRemover && listaProdutos.includes(produtoParaRemover)) {
+            const indexProduto = listaProdutos.indexOf(produtoParaRemover);
+            produtosPorTipo[tipoSelecionado].splice(indexProduto, 1);
+            tipoProdutos();
+        }
+    } else {
+        alert('Não há produtos para remover.');
+    }
 }
 
 // Chama a função de inicialização quando a página carregar

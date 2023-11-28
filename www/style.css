@@ -163,6 +163,70 @@ body {
 }
 
 
+/* CSS para tipo de produtoos */
+.tipo-produtos-page .top-bar h1 {
+    margin: 0;
+}
+
+.tipo-produtos-page .menu-buttons {
+    margin-top: 10px;
+}
+
+.tipo-produtos-page .menu-buttons button {
+    margin: 0 10px;
+    padding: 8px 16px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.tipo-produtos-page .menu-buttons button:hover {
+    background-color: #45a049;
+}
+
+.tipo-produtos-page .main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.tipo-produtos-page .product-type-container,
+.tipo-produtos-page .product-list-container,
+.tipo-produtos-page .product-controls {
+    margin-bottom: 20px;
+}
+
+.tipo-produtos-page .product-type-container label {
+    margin-right: 10px;
+}
+
+.tipo-produtos-page .product-type-container select {
+    padding: 8px;
+    font-size: 14px;
+}
+
+.tipo-produtos-page .product-list-container h2 {
+    margin-bottom: 10px;
+}
+
+.tipo-produtos-page .product-controls button {
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+}
+
+.tipo-produtos-page .product-controls button:hover {
+    background-color: #45a049;
+}
+
+
 /* Mídia query para telas menores */
 @media only screen and (max-width: 600px) {
     .bottom-bar button {
