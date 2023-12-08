@@ -226,6 +226,79 @@ body {
     background-color: #45a049;
 }
 
+/*CSS para tabela dos produtos |- ABA PRODUTOS -| */
+#productTableContainer {
+    margin-top: 20px;
+}
+
+#productTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#productTable th, #productTable td {
+    border: 1px solid #ddd;
+    padding: 12px; /* Aumentei o padding para mais espaçamento */
+    text-align: left;
+}
+
+#productTable th {
+    background-color: #f2f2f2;
+    text-align: center; /* Centralizei o texto */
+}
+
+#productTable tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+#productTable caption {
+    caption-side: top;
+    text-align: center; /* Centralizei o texto da caption */
+    font-size: 1.5em; /* Ajuste o tamanho da fonte conforme necessário */
+    font-weight: bold; /* Deixa o título mais destacado */
+    margin-bottom: 10px;
+}
+
+/*CSS para os butoes |- ABA PRODUTOS -| */
+
+#productButtons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px; /* Adicionei uma margem no topo */
+}
+
+/*CSS para tabela dos tipo produtos |- ABA TIPO PRODUTOS -| */
+
+#productTypeTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#productTypeTable th, #productTypeTable td {
+    border: 1px solid #ddd;
+    padding: 12px; /* Aumentei o padding para mais espaçamento */
+    text-align: left;
+}
+
+#productTypeTable th {
+    background-color: #f2f2f2;
+    text-align: center; /* Centralizei o texto */
+}
+
+#productTypeTable tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+#productTypeTable caption {
+    caption-side: top;
+    text-align: center; /* Centralizei o texto da caption */
+    font-size: 1.5em; /* Ajuste o tamanho da fonte conforme necessário */
+    font-weight: bold; /* Deixa o título mais destacado */
+    margin-bottom: 10px;
+}
+
 
 /* Mídia query para telas menores */
 @media only screen and (max-width: 600px) {

@@ -1,15 +1,39 @@
 // Array para armazenar os produtos
-let produtos = [];
+const produtos = [
+    {
+        descricao: 'Maçã',
+        tipo: 'Fruta',
+        preco: 1.50
+    },
+    {
+        descricao: 'Doce da Casa',
+        tipo: 'Doces',
+        preco: 2.00
+    },
+    {
+        descricao: 'Frango a bras',
+        tipo: 'Prato de Carne',
+        preco: 5.99
+    }
+];
+
+var idProduto;
+
+//atualizarListaProdutos();
+
+//const tiposProdutos = [];
+
+const tiposProdutos = [
+    { descricao: 'Fruta' },
+    { descricao: 'Prato de Carne' },
+    { descricao: 'Doces' }
+];
+
+var idTipoProduto;
 
 //Estado das mesas se estao abertas ou fechadas
 const estadoMesas = {};
 
-const produtosPorTipo = {
-    fruta: ['Maçã', 'Banana', 'Morango'],
-    vegetal: ['Alface', 'Tomate', 'Cenoura'],
-    carne: ['Frango', 'Carne de Porco', 'Carne de Boi']
-    // Adicione mais tipos e produtos conforme necessário
-};
 
 function mostrarMesas() {
     window.location.href = 'mesas.html';
@@ -23,20 +47,52 @@ function mostrarTiposProdutos() {
     window.location.href = 'TipoProdutos.html';
 }
 
+// Função para exibir o formulário de adição de produto
+function mostrarFormulario() {
+    document.getElementById('formTitle').textContent = 'Adicionar Produto';
+    document.getElementById('productFormContainer').style.display = 'block';
+}
+
+// Função para fechar o formulário de adição de produto
+function fecharFormulario() {
+    document.getElementById('productFormContainer').style.display = 'none';
+}
+
+// Função para exibir o formulário de edição de produto
+function mostrarEditarFormulario(index) {
+    document.getElementById('editFormTitle').textContent = 'Editar Produto';
+    document.getElementById('editFormContainer').style.display = 'block';
+    idProduto = index;
+}
+
+// Função para fechar o formulário de edição de produto
+function fecharEditarFormulario() {
+    document.getElementById('editFormContainer').style.display = 'none';
+}
+
 // Função para adicionar um produto
 function adicionarProduto() {
-    const productName = document.getElementById('productName').value;
+    const productDescription = document.getElementById('productDescription').value;
+    const productType = document.getElementById('productType').value;
     const productPrice = document.getElementById('productPrice').value;
 
     // Validar entrada
-    if (!productName || !productPrice) {
+    if (!productDescription || !productType || !productPrice) {
         alert('Por favor, preencha todos os campos.');
+        return;
+    }
+
+    const tipoProdutoExistente = tiposProdutos.find(tipo => tipo.descricao === productType);
+
+    if (!tipoProdutoExistente) {
+        alert('O tipo de produto selecionado não existe. Por favor, escolha um tipo válido.');
         return;
     }
 
     // Criar objeto de produto
     const novoProduto = {
-        nome: productName,
+        descricao: productDescription,
+        tipo: productType,
         preco: parseFloat(productPrice),
     };
 
@@ -44,53 +100,79 @@ function adicionarProduto() {
     produtos.push(novoProduto);
 
     // Limpar campos do formulário
-    document.getElementById('productName').value = '';
+    document.getElementById('productDescription').value = '';
+    document.getElementById('productType').value = '';
     document.getElementById('productPrice').value = '';
 
     // Atualizar a lista de produtos
     atualizarListaProdutos();
+    fecharFormulario();
+}
+
+// Função para verificar se um tipo de produto existe
+function tipoProdutoExiste(tipo) {
+    return tiposProdutos.some(t => t.descricao === tipo);
 }
 
 // Função para editar um produto
-function editarProduto(index) {
-    const produtoEditado = prompt('Editar nome do produto:', produtos[index].nome);
-    const novoPreco = prompt('Editar preço do produto:', produtos[index].preco);
+function editarProduto() {
+    //const selectedIndex = parseInt(document.getElementById('editProductIndex').value);
+    // Obter os valores dos campos de edição
+    const novaDescricao = document.getElementById('editProductDescription').value;
+    const novoTipo = document.getElementById('editProductType').value;
+    const novoPreco = parseFloat(document.getElementById('editProductPrice').value);
 
     // Validar entrada
-    if (!produtoEditado || novoPreco === null) {
-        alert('Edição cancelada ou campos inválidos.');
+    if (!novaDescricao || !novoTipo || isNaN(novoPreco)) {
+        alert('Por favor, preencha todos os campos corretamente.');
+        return;
+    }
+
+    // Verificar se o tipo de produto existe
+    if (!tipoProdutoExiste(novoTipo)) {
+        alert('O tipo de produto especificado não existe.');
         return;
     }
 
     // Atualizar os detalhes do produto
-    produtos[index].nome = produtoEditado;
-    produtos[index].preco = parseFloat(novoPreco);
+    produtos[idProduto].descricao = novaDescricao;
+    produtos[idProduto].tipo = novoTipo;
+    produtos[idProduto].preco = novoPreco;
 
     // Atualizar a lista de produtos
     atualizarListaProdutos();
-}
 
+    // Fechar o formulário de edição
+    fecharEditarFormulario();
+}
 
 // Função para remover um produto
 function removerProduto(index) {
     produtos.splice(index, 1);
     atualizarListaProdutos();
+    fecharEditarFormulario();
 }
 
 // Função para atualizar a lista de produtos na página
 function atualizarListaProdutos() {
-    const productList = document.getElementById('productList');
+    const productList = document.getElementById('productTable').getElementsByTagName('tbody')[0];
 
     // Limpar a lista atual
     productList.innerHTML = '';
 
     // Adicionar os produtos à lista
     produtos.forEach((produto, index) => {
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `${produto.nome} - € ${produto.preco.toFixed(2)} 
-            <button onclick="removerProduto(${index})">Remover</button>
-            <button onclick="editarProduto(${index})">Editar</button>`;
-        productList.appendChild(listItem);
+        const newRow = productList.insertRow();
+        const cell1 = newRow.insertCell(0);
+        const cell2 = newRow.insertCell(1);
+        const cell3 = newRow.insertCell(2);
+        const cell4 = newRow.insertCell(3);
+
+        cell1.innerHTML = produto.descricao;
+        cell2.innerHTML = produto.tipo;
+        cell3.innerHTML = `€ ${produto.preco.toFixed(2)}`;
+        cell4.innerHTML = `<button onclick="mostrarEditarFormulario(${index})">Editar</button>
+                           <button onclick="removerProduto(${index})">Remover</button>`;
     });
 }
 
@@ -103,9 +185,9 @@ function inicializarQuadrados() {
         const square = document.createElement('div');
         square.classList.add('table-square');
         square.textContent = i;
-        
+
         // Adiciona um evento de clique para trocar o número da mesa e alterar a cor de fundo
-        square.addEventListener('click', function() {
+        square.addEventListener('click', function () {
             trocarNumeroMesa(i);
             selecionarMesa(square, i);
         });
@@ -196,86 +278,114 @@ function fecharMesa() {
     }, 3000);
 }
 
-
 // Função chamada quando a página é carregada
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     tipoProdutos();
 });
 
-// Função para atualizar a lista de produtos com base no tipo selecionado
-function tipoProdutos() {
-    const tipoSelecionado = document.getElementById('productType').value;
-    const listaProdutos = produtosPorTipo[tipoSelecionado] || [];
+// Função para mostrar o formulário de adição de tipo de produto
+function mostrarTipoProdutoFormulario() {
+    document.getElementById('productTypeFormContainer').style.display = 'block';
+}
 
-    const productListContainer = document.getElementById('productList');
-    productListContainer.innerHTML = '';
+// Função para fechar o formulário de adição de tipo de produto
+function fecharTipoProdutoFormulario() {
+    document.getElementById('productTypeFormContainer').style.display = 'none';
+}
 
-    if (listaProdutos.length > 0) {
-        listaProdutos.forEach(produto => {
-            const listItem = document.createElement('li');
-            listItem.textContent = produto;
-            productListContainer.appendChild(listItem);
-        });
-    } else {
-        const mensagemVazia = document.createElement('p');
-        mensagemVazia.textContent = 'Nenhum produto disponível para este tipo.';
-        productListContainer.appendChild(mensagemVazia);
-    }
+// Função para mostrar o formulário de midificação de tipo de produto
+function mostrarEditarTipoProdutoFormulario(index) {
+    document.getElementById('editTypeFormContainer').style.display = 'block';
+    idTipoProduto = index;
+}
+
+// Função para fechar o formulário de modificação de tipo de produto
+function fecharEditarTipoProdutoFormulario() {
+    document.getElementById('editTypeFormContainer').style.display = 'none';
 }
 
 // Função para adicionar um novo produto
 function adicionarTipoProduto() {
-    const tipoSelecionado = document.getElementById('productType').value;
-    const novoProduto = prompt('Digite o nome do novo produto:');
+    const tipoProdutoDescricao = document.getElementById('productTypeDescription').value;
 
-    if (novoProduto) {
-        if (!produtosPorTipo[tipoSelecionado]) {
-            produtosPorTipo[tipoSelecionado] = [];
-        }
-
-        produtosPorTipo[tipoSelecionado].push(novoProduto);
-        tipoProdutos();
+    // Validar entrada
+    if (!tipoProdutoDescricao) {
+        alert('Por favor, preencha todos os campos.');
+        return;
     }
+
+    // Criar objeto de tipo de produto
+    const novoTipoProduto = {
+        descricao: tipoProdutoDescricao,
+    };
+
+    // Adicionar tipo de produto ao array
+    tiposProdutos.push(novoTipoProduto);
+
+    // Limpar campo do formulário
+    document.getElementById('productTypeDescription').value = '';
+
+    // Atualizar a lista de tipos de produtos
+    atualizarTipoProdutos();
+    fecharTipoProdutoFormulario();
 }
 
 // Função para editar um produto existente
 function editarTipoProduto() {
-    const tipoSelecionado = document.getElementById('productType').value;
-    const listaProdutos = produtosPorTipo[tipoSelecionado] || [];
+    const novaTipoProduto = document.getElementById('editTypeDescription').value;
 
-    if (listaProdutos.length > 0) {
-        const produtoParaEditar = prompt('Escolha um produto para editar:\n' + listaProdutos.join(', '));
-
-        if (produtoParaEditar && listaProdutos.includes(produtoParaEditar)) {
-            const novoNomeProduto = prompt('Digite o novo nome para ' + produtoParaEditar + ':');
-
-            if (novoNomeProduto) {
-                const indexProduto = listaProdutos.indexOf(produtoParaEditar);
-                produtosPorTipo[tipoSelecionado][indexProduto] = novoNomeProduto;
-                tipoProdutos();
-            }
-        }
-    } else {
-        alert('Não há produtos para editar.');
+    // Validar entrada
+    if (!novaTipoProduto) {
+        alert('Por favor, preencha todos os campos corretamente.');
+        return;
     }
+
+    // Atualizar os detalhes do produto
+    tiposProdutos[idTipoProduto].descricao = novaTipoProduto;
+
+    // Atualizar a lista de produtos
+    atualizarTipoProdutos();
+
+    // Fechar o formulário de edição
+    fecharEditarTipoProdutoFormulario();
 }
 
 // Função para remover um produto existente
-function removerTipoProduto() {
-    const tipoSelecionado = document.getElementById('productType').value;
-    const listaProdutos = produtosPorTipo[tipoSelecionado] || [];
+function removerTipoProduto(index) {
+    const tipoRemovido = tiposProdutos[index].descricao;
 
-    if (listaProdutos.length > 0) {
-        const produtoParaRemover = prompt('Escolha um produto para remover:\n' + listaProdutos.join(', '));
+    // Verificar se o tipo de produto está em uso por algum produto
+    const tipoEmUso = produtos.some(produto => produto.tipo === tipoRemovido);
 
-        if (produtoParaRemover && listaProdutos.includes(produtoParaRemover)) {
-            const indexProduto = listaProdutos.indexOf(produtoParaRemover);
-            produtosPorTipo[tipoSelecionado].splice(indexProduto, 1);
-            tipoProdutos();
-        }
-    } else {
-        alert('Não há produtos para remover.');
+    if (tipoEmUso) {
+        alert('Não é possível remover o tipo de produto porque está sendo utilizado por algum produto.');
+        return;
     }
+
+    tiposProdutos.splice(index, 1);
+    atualizarTipoProdutos();
+}
+
+// Função para atualizar a lista de produtos com base no tipo selecionado
+function atualizarTipoProdutos() {
+    const tipoProdutoList = document.getElementById('productTypeTable').getElementsByTagName('tbody')[0];
+
+    // Limpar a lista atual
+    tipoProdutoList.innerHTML = '';
+
+    // Adicionar os tipos de produtos à lista
+    tiposProdutos.forEach((tipoProduto, index) => {
+        const newRow = tipoProdutoList.insertRow();
+        const cell1 = newRow.insertCell(0);
+        const cell2 = newRow.insertCell(1);
+
+        cell1.innerHTML = `${index + 1}.`;
+        cell2.innerHTML = tipoProduto.descricao;
+
+        const cell3 = newRow.insertCell(2);
+        cell3.innerHTML = `<button onclick="mostrarEditarTipoProdutoFormulario(${index})">Editar</button>
+                           <button onclick="removerTipoProduto(${index})">Remover</button>`;
+    });
 }
 
 // Chama a função de inicialização quando a página carregar

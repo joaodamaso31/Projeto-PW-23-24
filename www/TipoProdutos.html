@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Sistema de Gestão de Pedidos</title>
 </head>
-<body class="tipo-produtos-page">
+
+<body>
     <!-- Barra superior -->
     <div class="top-bar">
         <h1>ESTSRest - Gestão de Restaurantes</h1>
@@ -17,33 +19,49 @@
 
     <!-- Conteúdo principal -->
     <div class="main-content">
-        <div id="productTypeContainer">
-            <label for="productType">Escolha o Tipo:</label>
-            <select id="productType" onchange="tipoProdutos()">
-                <option value="fruta">Fruta</option>
-                <option value="vegetal">Vegetal</option>
-                <option value="carne">Carne</option>
-                <!-- Adicione mais opções conforme necessário -->
-            </select>
-        </div>
-    
-        <div id="productListContainer">
-            <h2>Produtos:</h2>
-            <ul id="productList"></ul>
+        <div id="productTableContainer">
+            <table id="productTypeTable">
+                <caption>Tipos de Produtos</caption>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo de Produto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dados dos tipos de produtos serão gerados dinamicamente em JavaScript -->
+                </tbody>
+            </table>
+            <div id="productButtons">
+                <button onclick="mostrarTipoProdutoFormulario()">Adicionar Tipo de Produto</button>
+            </div>
         </div>
 
-        <div id="productControls">
-            <button onclick="adicionarTipoProduto()">Adicionar Produto</button>
-            <button onclick="editarTipoProduto()">Editar Produto</button>
-            <button onclick="removerTipoProduto()">Remover Produto</button>
+        <!-- Formulário para adicionar/editar tipos de produtos -->
+        <div id="productTypeFormContainer" style="display: none" class="product-form">
+            <h2 id="typeFormTitle">Adicionar Tipo de Produto</h2>
+            <label for="productTypeDescription">Tipo de Produto:</label>
+            <input type="text" id="productTypeDescription" required>
+            <button onclick="adicionarTipoProduto()">Adicionar Tipo de Produto</button>
+            <button onclick="fecharTipoProdutoFormulario()">Fechar</button>
         </div>
+
+        <div id="editTypeFormContainer" style="display: none" class="product-form">
+            <h2 id="editTypeFormTitle">Editar Tipo de Produto</h2>
+            <label for="editTypeDescription">Tipo de Produto:</label>
+            <input type="text" id="editTypeDescription" required>
+            <button onclick="editarTipoProduto()">Editar Tipo de Produto</button>
+            <button onclick="fecharEditarTipoProdutoFormulario()">Fechar</button>
+        </div>
+    </div>
     </div>
 
     <!-- Barra inferior -->
     <div class="bottom-bar">
-       
+
     </div>
 
     <script src="script.js"></script>
 </body>
+
 </html>
