@@ -23,8 +23,6 @@ const produtos = [
 
 var idProduto;
 
-//atualizarListaProdutos();
-
 //const tiposProdutos = [];
 
 const tiposProdutos = [
@@ -405,9 +403,9 @@ function editarProdutosConsumidos() {
     }
 }
 
-
 // Função chamada quando a página é carregada
 document.addEventListener('DOMContentLoaded', function () {
+    atualizarTipoProdutos();
     tipoProdutos();
     inicializarQuadrados();
 });
@@ -529,4 +527,5 @@ function atualizarTipoProdutos() {
 // Chama a função de inicialização quando a página carregar
 window.onload = inicializarQuadrados;
 
+atualizarListaProdutos();
 
