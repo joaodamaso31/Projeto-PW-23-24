@@ -1,3 +1,7 @@
+//++++++++++++++++++++++++++++++++++++++++++++++
+//---------------- CONSTANTES ----------------
+//++++++++++++++++++++++++++++++++++++++++++++++
+
 // Array para armazenar os produtos
 const produtos = [
     {
@@ -29,11 +33,20 @@ const tiposProdutos = [
     { descricao: 'Doces' }
 ];
 
+//variavel para guardar id's
 var idTipoProduto;
 
 //Estado das mesas se estao abertas ou fechadas
 const estadoMesas = {};
 
+const estadoMesasArray = [];
+
+let totalGeral = 0;
+
+
+//++++++++++++++++++++++++++++++++++++++++++++++
+//-------- FUNCTIONS PARA CHAMAR HTML ----------
+//++++++++++++++++++++++++++++++++++++++++++++++
 
 function mostrarMesas() {
     window.location.href = 'mesas.html';
@@ -46,6 +59,13 @@ function mostrarProdutos() {
 function mostrarTiposProdutos() {
     window.location.href = 'TipoProdutos.html';
 }
+
+
+
+
+//++++++++++++++++++++++++++++++++++++++++++++++
+//----------------- PRODUTOS ------------------
+//++++++++++++++++++++++++++++++++++++++++++++++
 
 // Função para exibir o formulário de adição de produto
 function mostrarFormulario() {
@@ -176,6 +196,14 @@ function atualizarListaProdutos() {
     });
 }
 
+
+
+
+
+//++++++++++++++++++++++++++++++++++++++++++++++
+//------------------- MESAS ------------------
+//++++++++++++++++++++++++++++++++++++++++++++++
+
 // Função para inicializar os quadrados numerados e a especificação da mesa
 function inicializarQuadrados() {
     const mesasContainer = document.getElementById('mesasContainer');
@@ -195,9 +223,6 @@ function inicializarQuadrados() {
         mesasContainer.appendChild(square);
     }
 
-    /*const mesaSpecificationText = document.createElement('p');
-    mesaSpecificationText.textContent = "Mesa 1 - Consumido: R$ 50.00";
-    mesaSpecification.appendChild(mesaSpecificationText);*/
 }
 
 // Função para trocar o número da mesa e selecionar a mesa
@@ -227,61 +252,174 @@ function selecionarMesa(square, numeroMesa) {
 // Função para abrir a mesa e trocar a cor para verde
 function abrirMesa() {
     const mesaNumber = document.getElementById('mesaNumber');
-    const mesaAtual = mesaNumber.textContent;
+    const numeroMesa = parseInt(mesaNumber.textContent.replace('Nº da Mesa: ', ''));
 
-    // Verifica se a mesa já está aberta
-    const mesaAberta = estadoMesas[mesaAtual];
+    if (!isNaN(numeroMesa)) {
+        const mesaAtual = `Mesa ${numeroMesa}`;
+        const mesaAberta = estadoMesas[mesaAtual];
 
-    if (!mesaAberta) {
-        // Adiciona a classe 'aberta' à mesa
-        mesaNumber.classList.add('aberta');
-        // Altera o conteúdo para indicar que a mesa está aberta
-        mesaNumber.textContent = `${mesaAtual} - Aberta`;
+        if (!mesaAberta) {
+            mesaNumber.classList.add('aberta');
+            mesaNumber.textContent = `${mesaAtual} - Aberta`;
 
-        // Troca a cor do quadrado da mesa para verde
-        const square = document.querySelector('.table-square.selected');
-        if (square) {
-            square.style.backgroundColor = '#4CAF50'; // verde
+            const square = document.querySelector('.table-square.selected');
+            if (square) {
+                square.style.backgroundColor = '#4CAF50'; // verde
+            }
+
+            estadoMesas[mesaAtual] = true;
+
+            // Adicione ao estadoMesasTest apenas se não estiver já presente
+            const mesaTestIndex = estadoMesasArray.findIndex(item => item.mesa === mesaAtual);
+            if (mesaTestIndex === -1) {
+                estadoMesasArray.push({
+                    mesa: mesaAtual,
+                    tf: 'true',
+                });
+            }
+
+        } else {
+            alert('Esta mesa já está aberta!');
         }
-
-        // Atualiza o estado da mesa para aberta
-        estadoMesas[mesaAtual] = true;
     } else {
-        // Se a mesa já estiver aberta, exibe uma mensagem informando
-        alert('Esta mesa já está aberta!');
+        alert('Selecione uma mesa antes de abrir!');
     }
 }
+
 
 // Função para fechar a mesa
 function fecharMesa() {
     const mesaNumber = document.getElementById('mesaNumber');
-    const mesaAtual = mesaNumber.textContent;
+    const numeroMesa = parseInt(mesaNumber.textContent.replace('Nº da Mesa: ', ''));
 
-    // Remove a classe 'aberta' da mesa
-    mesaNumber.classList.remove('aberta');
-    // Altera o conteúdo para indicar que a mesa está fechada
-    mesaNumber.textContent = `${mesaAtual} - Fechada`;
+    if (!isNaN(numeroMesa)) {
+        const mesaAtual = `Mesa ${numeroMesa}`;
+        const mesaAberta = estadoMesas[mesaAtual];
 
-    // Troca a cor do quadrado da mesa para vermelho
-    const square = document.querySelector('.table-square.selected');
-    if (square) {
-        square.style.backgroundColor = '#FF0000'; // vermelho
+        if (mesaAberta) {
+            mesaNumber.classList.remove('aberta');
+            mesaNumber.textContent = `${mesaAtual} - Fechada`;
+
+            const square = document.querySelector('.table-square.selected');
+            if (square) {
+                square.style.backgroundColor = '#FF0000'; // vermelho
+            }
+
+            estadoMesas[mesaAtual] = false;
+
+            // Remova do estadoMesasTest se estiver presente
+            const mesaTestIndex = estadoMesasArray.findIndex(item => item.mesa === mesaAtual);
+            if (mesaTestIndex !== -1) {
+                estadoMesasArray.splice(mesaTestIndex, 1);
+            }
+
+            // Restaura a cor normal após 10 segundos
+            setTimeout(() => {
+                square.style.backgroundColor = ''; // Cor padrão (cinza claro)
+                estadoMesas[mesaAtual] = false;
+            }, 3000);
+
+            // Limpar a tabela atual
+            const table = document.getElementById('consumedItemsTable').getElementsByTagName('tbody')[0];
+            table.innerHTML = '';
+
+            // Imprimir a fatura
+            imprimirFatura();
+        } else {
+            alert('Esta mesa não está aberta para fechar!');
+        }
+    } else {
+        alert('Selecione uma mesa antes de fechar!');
+    }
+}
+
+// Função para imprimir a fatura
+function imprimirFatura() {
+    const mesaNumber = document.getElementById('mesaNumber').textContent;
+    const totalAmount = document.getElementById('totalAmount').textContent;
+
+    alert(`Fatura para ${mesaNumber}\n${totalAmount}`);
+}
+
+function mostrarMesasProdutoFormulario() {
+    document.getElementById('productMesasFormContainer').style.display = 'block';
+}
+
+// Função para fechar o formulário de adição de tipo de produto
+function fecharMesasProdutoFormulario() {
+    document.getElementById('productMesasFormContainer').style.display = 'none';
+}
+
+function editarProdutosConsumidos() {
+    const productDescription = document.getElementById('productMesasDescription').value;
+    const quantidade = document.getElementById('quantidadeMesasDescription').value;
+    const mesaNumber = document.getElementById('mesaNumber').textContent;
+
+    const numeroMesa = parseInt(mesaNumber.replace('Nº da Mesa: ', ''));
+
+    // Verificar se uma mesa está selecionada
+    if (isNaN(numeroMesa)) {
+        alert('Selecione uma mesa antes de adicionar produtos consumidos.');
+        return;
     }
 
-    // Atualiza o estado da mesa para fechada
-    estadoMesas[mesaAtual] = false;
+    // Verificar se a mesa está aberta no estadoMesasArray
+    const mesaAberta = estadoMesasArray.find(item => item.mesa === `Mesa ${numeroMesa}` && item.tf === 'true');
 
-    setTimeout(function () {
-        square.style.backgroundColor = ''; // Cor padrão (cinza claro)
-        // Atualiza o estado da mesa para fechada
-        estadoMesas[mesaAtual] = false;
-    }, 3000);
+    if (mesaAberta) {
+        const produtoEncontrado = produtos.find(produto => produto.descricao === productDescription);
+
+        if (produtoEncontrado) {
+            const table = document.getElementById('consumedItemsTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+
+            cell1.innerHTML = productDescription;
+            cell2.innerHTML = quantidade;
+
+            const precoProduto = produtoEncontrado.preco;
+            const total = quantidade * precoProduto;
+
+            const totalTudo = total;
+            totalGeral += totalTudo;
+
+            cell3.innerHTML = `€ ${total.toFixed(2)}`;
+
+            document.getElementById('productMesasDescription').value = '';
+            document.getElementById('quantidadeMesasDescription').value = '';
+
+            // Atualizar o total no HTML
+            const totalAmountElement = document.getElementById('totalAmount');
+            totalAmountElement.textContent = `Total: € ${totalGeral.toFixed(2)}`;
+
+            //atualizarTotalProdutosMesas();
+            fecharMesasProdutoFormulario();
+        } else {
+            alert('Produto não encontrado na tabela de produtos.');
+        }
+    } else {
+        alert('A mesa não está aberta. Abra a mesa antes de adicionar produtos consumidos.');
+    }
 }
+
 
 // Função chamada quando a página é carregada
 document.addEventListener('DOMContentLoaded', function () {
     tipoProdutos();
+    inicializarQuadrados();
 });
+
+
+
+
+
+
+//++++++++++++++++++++++++++++++++++++++++++++++
+//-------------- TIPO DE PRODUTOS --------------
+//++++++++++++++++++++++++++++++++++++++++++++++
 
 // Função para mostrar o formulário de adição de tipo de produto
 function mostrarTipoProdutoFormulario() {

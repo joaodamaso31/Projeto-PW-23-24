@@ -299,6 +299,15 @@ body {
     margin-bottom: 10px;
 }
 
+/*CSS para container adicionar produtos mesas |- ABA MESAS -| */
+#productMesasFormContainer {
+    width: 300px; /* Defina a largura desejada */
+    height: auto; /* Ou defina uma altura específica se necessário */
+    padding: 10px; /* Adicione algum preenchimento para espaçamento interno */
+    box-sizing: border-box; /* Certifique-se de que o preenchimento não afete a largura total */
+}
+
+
 
 /* Mídia query para telas menores */
 @media only screen and (max-width: 600px) {
