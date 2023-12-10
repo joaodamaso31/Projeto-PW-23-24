@@ -180,21 +180,44 @@ function atualizarListaProdutos() {
     const productList = document.getElementById('productTable').getElementsByTagName('tbody')[0];
 
     // Limpar a lista atual
-    productList.innerHTML = '';
+    while (productList.firstChild) {
+        productList.removeChild(productList.firstChild);
+    }
 
     // Adicionar os produtos à lista
     produtos.forEach((produto, index) => {
         const newRow = productList.insertRow();
-        const cell1 = newRow.insertCell(0);
-        const cell2 = newRow.insertCell(1);
-        const cell3 = newRow.insertCell(2);
-        const cell4 = newRow.insertCell(3);
 
-        cell1.innerHTML = produto.descricao;
-        cell2.innerHTML = produto.tipo;
-        cell3.innerHTML = `€ ${produto.preco.toFixed(2)}`;
-        cell4.innerHTML = `<button onclick="mostrarEditarFormulario(${index})">Editar</button>
-                           <button onclick="removerProduto(${index})">Remover</button>`;
+        // Célula 1: Descrição
+        const cell1 = newRow.insertCell(0);
+        const descricaoText = document.createTextNode(produto.descricao);
+        cell1.appendChild(descricaoText);
+
+        // Célula 2: Tipo
+        const cell2 = newRow.insertCell(1);
+        const tipoText = document.createTextNode(produto.tipo);
+        cell2.appendChild(tipoText);
+
+        // Célula 3: Preço
+        const cell3 = newRow.insertCell(2);
+        const precoText = document.createTextNode(`€ ${produto.preco.toFixed(2)}`);
+        cell3.appendChild(precoText);
+
+        // Célula 4: Botões de Ação
+        const cell4 = newRow.insertCell(3);
+        const editarButton = document.createElement('button');
+        editarButton.textContent = 'Editar';
+        editarButton.onclick = function () {
+            mostrarEditarFormulario(index);
+        };
+        cell4.appendChild(editarButton);
+
+        const removerButton = document.createElement('button');
+        removerButton.textContent = 'Remover';
+        removerButton.onclick = function () {
+            removerProduto(index);
+        };
+        cell4.appendChild(removerButton);
     });
 }
 
@@ -228,7 +251,6 @@ function inicializarQuadrados() {
         // Inicializa a lista de produtos para cada mesa
         produtosPorMesa[`Mesa ${i}`] = [];
     }
-
 }
 
 // Função para trocar o número da mesa e selecionar a mesa
@@ -334,6 +356,13 @@ function fecharMesa() {
 
             // Imprimir a fatura
             imprimirFatura();
+
+            //O total da mesa passar a 0
+            totalPorMesa[mesaAtual] = 0;
+
+            // Atualizar o total no HTML
+            const totalAmountElement = document.getElementById('totalAmount');
+            totalAmountElement.textContent = `Total: € 0.00`;
         } else {
             alert('Esta mesa não está aberta para fechar!');
         }
@@ -379,13 +408,49 @@ function exibirProdutosConsumidos(numeroMesa) {
         const cell1 = newRow.insertCell(0);
         const cell2 = newRow.insertCell(1);
         const cell3 = newRow.insertCell(2);
+        const cell4 = newRow.insertCell(3);
 
         cell1.innerHTML = produto.descricao;
         cell2.innerHTML = produto.quantidade;
 
         const total = produto.quantidade * produto.preco;
         cell3.innerHTML = `€ ${total.toFixed(2)}`;
+
+        const removerButton = document.createElement('button');
+        removerButton.textContent = 'Remover';
+        removerButton.addEventListener('click', () => removerProdutoMesa(numeroMesa, produto));
+        cell4.appendChild(removerButton)
     });
+}
+
+// Função para remover um produto de uma mesa específica
+function removerProdutoMesa(numeroMesa, produto) {
+    const mesaString = `Mesa ${numeroMesa}`;
+    const produtosDaMesa = produtosPorMesa[mesaString] || [];
+
+    // Encontrar o índice do produto dentro do array
+    const index = produtosDaMesa.findIndex(p => p === produto);
+
+    // Verificar se o produto está presente
+    if (index !== -1) {
+        // Remover o produto do array da mesa
+        const produtoRemovido = produtosDaMesa.splice(index, 1)[0]; // Obtenha o produto removido
+
+        // Atualizar a lista e a tabela
+        produtosPorMesa[mesaString] = produtosDaMesa;
+        exibirProdutosConsumidos(numeroMesa);
+
+        // Remover o preço do produto do total da mesa
+        const totalMesa = totalPorMesa[mesaString] || 0;
+        const precoProdutoRemovido = produtoRemovido.quantidade * produtoRemovido.preco;
+        totalPorMesa[mesaString] = totalMesa - precoProdutoRemovido;
+
+        // Atualizar o total no HTML
+        const totalAmountElement = document.getElementById('totalAmount');
+        totalAmountElement.textContent = `Total: € ${totalPorMesa[mesaString].toFixed(2)}`;
+    } else {
+        alert('Produto não encontrado para remover.');
+    }
 }
 
 function editarProdutosConsumidos() {
@@ -444,11 +509,10 @@ function editarProdutosConsumidos() {
             if (!totalPorMesa[`Mesa ${numeroMesa}`]) {
                 totalPorMesa[`Mesa ${numeroMesa}`] = 0;
             }
-        
-            const totalMesa = totalPorMesa[`Mesa ${numeroMesa}`];
-            totalPorMesa[`Mesa ${numeroMesa}`] = totalMesa + totalTudo;
-        
-            // Atualizar o total no HTML
+
+            //const totalTudo = total;
+            totalPorMesa[`Mesa ${numeroMesa}`] += totalTudo;
+
             const totalAmountElement = document.getElementById('totalAmount');
             totalAmountElement.textContent = `Total: € ${totalPorMesa[`Mesa ${numeroMesa}`].toFixed(2)}`;
 
@@ -572,20 +636,40 @@ function atualizarTipoProdutos() {
     const tipoProdutoList = document.getElementById('productTypeTable').getElementsByTagName('tbody')[0];
 
     // Limpar a lista atual
-    tipoProdutoList.innerHTML = '';
+    while (tipoProdutoList.firstChild) {
+        tipoProdutoList.removeChild(tipoProdutoList.firstChild);
+    }
 
     // Adicionar os tipos de produtos à lista
     tiposProdutos.forEach((tipoProduto, index) => {
         const newRow = tipoProdutoList.insertRow();
+
+        // Célula 1: Número
         const cell1 = newRow.insertCell(0);
+        const numeroText = document.createTextNode(`${index + 1}.`);
+        cell1.appendChild(numeroText);
+
+        // Célula 2: Descrição
         const cell2 = newRow.insertCell(1);
+        const descricaoText = document.createTextNode(tipoProduto.descricao);
+        cell2.appendChild(descricaoText);
 
-        cell1.innerHTML = `${index + 1}.`;
-        cell2.innerHTML = tipoProduto.descricao;
-
+        // Célula 3: Botões de Ação
         const cell3 = newRow.insertCell(2);
-        cell3.innerHTML = `<button onclick="mostrarEditarTipoProdutoFormulario(${index})">Editar</button>
-                           <button onclick="removerTipoProduto(${index})">Remover</button>`;
+
+        const editarButton = document.createElement('button');
+        editarButton.textContent = 'Editar';
+        editarButton.onclick = function () {
+            mostrarEditarTipoProdutoFormulario(index);
+        };
+        cell3.appendChild(editarButton);
+
+        const removerButton = document.createElement('button');
+        removerButton.textContent = 'Remover';
+        removerButton.onclick = function () {
+            removerTipoProduto(index);
+        };
+        cell3.appendChild(removerButton);
     });
 }
 
