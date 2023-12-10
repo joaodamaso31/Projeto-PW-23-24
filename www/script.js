@@ -39,6 +39,10 @@ const estadoMesas = {};
 
 const estadoMesasArray = [];
 
+const produtosPorMesa = {};
+
+const totalPorMesa = {};
+
 let totalGeral = 0;
 
 
@@ -216,9 +220,13 @@ function inicializarQuadrados() {
         square.addEventListener('click', function () {
             trocarNumeroMesa(i);
             selecionarMesa(square, i);
+            exibirProdutosConsumidos(i);
         });
 
         mesasContainer.appendChild(square);
+
+        // Inicializa a lista de produtos para cada mesa
+        produtosPorMesa[`Mesa ${i}`] = [];
     }
 
 }
@@ -273,9 +281,9 @@ function abrirMesa() {
                 estadoMesasArray.push({
                     mesa: mesaAtual,
                     tf: 'true',
+                    produtosPorMesa: []
                 });
             }
-
         } else {
             alert('Esta mesa já está aberta!');
         }
@@ -308,6 +316,7 @@ function fecharMesa() {
             // Remova do estadoMesasTest se estiver presente
             const mesaTestIndex = estadoMesasArray.findIndex(item => item.mesa === mesaAtual);
             if (mesaTestIndex !== -1) {
+                estadoMesasArray[mesaTestIndex].produtosPorMesa = estadoMesas[mesaAtual].produtosPorMesa;
                 estadoMesasArray.splice(mesaTestIndex, 1);
             }
 
@@ -316,6 +325,8 @@ function fecharMesa() {
                 square.style.backgroundColor = ''; // Cor padrão (cinza claro)
                 estadoMesas[mesaAtual] = false;
             }, 3000);
+
+            produtosPorMesa[mesaAtual] = [];
 
             // Limpar a tabela atual
             const table = document.getElementById('consumedItemsTable').getElementsByTagName('tbody')[0];
@@ -348,6 +359,35 @@ function fecharMesasProdutoFormulario() {
     document.getElementById('productMesasFormContainer').style.display = 'none';
 }
 
+
+// Função para exibir os produtos consumidos da mesa selecionada
+function exibirProdutosConsumidos(numeroMesa) {
+    const table = document.getElementById('consumedItemsTable').getElementsByTagName('tbody')[0];
+
+    const mesaString = `Mesa ${numeroMesa}`;
+
+    const produtosDaMesa = produtosPorMesa[mesaString] || [];
+
+    console.log(produtosDaMesa);
+
+    // Limpar a tabela atual
+    table.innerHTML = '';
+
+    // Adicionar os produtos à tabela
+    produtosDaMesa.forEach(produto => {
+        const newRow = table.insertRow();
+        const cell1 = newRow.insertCell(0);
+        const cell2 = newRow.insertCell(1);
+        const cell3 = newRow.insertCell(2);
+
+        cell1.innerHTML = produto.descricao;
+        cell2.innerHTML = produto.quantidade;
+
+        const total = produto.quantidade * produto.preco;
+        cell3.innerHTML = `€ ${total.toFixed(2)}`;
+    });
+}
+
 function editarProdutosConsumidos() {
     const productDescription = document.getElementById('productMesasDescription').value;
     const quantidade = document.getElementById('quantidadeMesasDescription').value;
@@ -368,6 +408,18 @@ function editarProdutosConsumidos() {
         const produtoEncontrado = produtos.find(produto => produto.descricao === productDescription);
 
         if (produtoEncontrado) {
+            // Adicionar o produto consumido à lista da mesa
+            if (!produtosPorMesa[`Mesa ${mesaNumber}`]) {
+                //produtosPorMesa[`Mesa ${mesaNumber}`] = [];
+            }
+
+            const mesaAtualProdutos = produtosPorMesa[`Mesa ${numeroMesa}`];
+            mesaAtualProdutos.push({
+                descricao: produtoEncontrado.descricao,
+                quantidade: parseInt(quantidade),
+                preco: produtoEncontrado.preco,
+            });
+
             const table = document.getElementById('consumedItemsTable').getElementsByTagName('tbody')[0];
             const newRow = table.insertRow();
 
@@ -389,12 +441,25 @@ function editarProdutosConsumidos() {
             document.getElementById('productMesasDescription').value = '';
             document.getElementById('quantidadeMesasDescription').value = '';
 
+            if (!totalPorMesa[`Mesa ${numeroMesa}`]) {
+                totalPorMesa[`Mesa ${numeroMesa}`] = 0;
+            }
+        
+            const totalMesa = totalPorMesa[`Mesa ${numeroMesa}`];
+            totalPorMesa[`Mesa ${numeroMesa}`] = totalMesa + totalTudo;
+        
             // Atualizar o total no HTML
             const totalAmountElement = document.getElementById('totalAmount');
-            totalAmountElement.textContent = `Total: € ${totalGeral.toFixed(2)}`;
+            totalAmountElement.textContent = `Total: € ${totalPorMesa[`Mesa ${numeroMesa}`].toFixed(2)}`;
+
+            // Exibir os produtos consumidos atualizados
+            exibirProdutosConsumidos(numeroMesa);
 
             //atualizarTotalProdutosMesas();
             fecharMesasProdutoFormulario();
+
+            // Atualizar totalGeral para a mesa específica
+            totalGeral = totalPorMesa[`Mesa ${numeroMesa}`];
         } else {
             alert('Produto não encontrado na tabela de produtos.');
         }
