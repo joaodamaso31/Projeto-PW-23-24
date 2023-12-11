@@ -662,7 +662,7 @@ function removerTipoProduto(index) {
     const tipoEmUso = produtos.some(produto => produto.tipo === tipoRemovido);
 
     if (tipoEmUso) {
-        alert('Não é possível remover o tipo de produto porque está sendo utilizado por algum produto.');
+        alert('Não é possível remover o tipo de produto porque está a ser utilizado por algum produto.');
         return;
     }
 
