@@ -111,6 +111,14 @@ function adicionarProduto() {
         return;
     }
 
+    // Verificar se já existe um produto com a mesma descrição
+    const produtoExistente = produtos.find(produto => produto.descricao === productDescription);
+
+    if (produtoExistente) {
+        alert('Já existe um produto com essa descrição. Por favor, escolha uma descrição única.');
+        return;
+    }
+
     // Criar objeto de produto
     const novoProduto = {
         descricao: productDescription,
@@ -147,6 +155,14 @@ function editarProduto() {
     // Validar entrada
     if (!novaDescricao || !novoTipo || isNaN(novoPreco)) {
         alert('Por favor, preencha todos os campos corretamente.');
+        return;
+    }
+
+    // Verificar se a nova descrição já existe
+    const descricaoExistente = produtos.find(produto => produto.descricao === novaDescricao && produtos.indexOf(produto) !== idProduto);
+
+    if (descricaoExistente) {
+        alert('Já existe um produto com essa descrição. Por favor, escolha uma descrição única.');
         return;
     }
 
@@ -351,8 +367,12 @@ function fecharMesa() {
             produtosPorMesa[mesaAtual] = [];
 
             // Limpar a tabela atual
-            const table = document.getElementById('consumedItemsTable').getElementsByTagName('tbody')[0];
-            table.innerHTML = '';
+            const tableBody = document.getElementById('consumedItemsTable').getElementsByTagName('tbody')[0];
+
+            // Limpar a tabela atual
+            while (tableBody.firstChild) {
+                tableBody.removeChild(tableBody.firstChild);
+            }
 
             // Imprimir a fatura
             imprimirFatura();
@@ -400,26 +420,29 @@ function exibirProdutosConsumidos(numeroMesa) {
     console.log(produtosDaMesa);
 
     // Limpar a tabela atual
-    table.innerHTML = '';
+    while (table.firstChild) {
+        table.removeChild(table.firstChild);
+    }
 
     // Adicionar os produtos à tabela
     produtosDaMesa.forEach(produto => {
         const newRow = table.insertRow();
+
         const cell1 = newRow.insertCell(0);
+        cell1.textContent = produto.descricao;
+
         const cell2 = newRow.insertCell(1);
+        cell2.textContent = produto.quantidade;
+
         const cell3 = newRow.insertCell(2);
-        const cell4 = newRow.insertCell(3);
-
-        cell1.innerHTML = produto.descricao;
-        cell2.innerHTML = produto.quantidade;
-
         const total = produto.quantidade * produto.preco;
-        cell3.innerHTML = `€ ${total.toFixed(2)}`;
+        cell3.textContent = `€ ${total.toFixed(2)}`;
 
+        const cell4 = newRow.insertCell(3);
         const removerButton = document.createElement('button');
         removerButton.textContent = 'Remover';
         removerButton.addEventListener('click', () => removerProdutoMesa(numeroMesa, produto));
-        cell4.appendChild(removerButton)
+        cell4.appendChild(removerButton);
     });
 }
 
@@ -489,19 +512,19 @@ function editarProdutosConsumidos() {
             const newRow = table.insertRow();
 
             const cell1 = newRow.insertCell(0);
+            cell1.textContent = productDescription;
+
             const cell2 = newRow.insertCell(1);
+            cell2.textContent = quantidade;
+
             const cell3 = newRow.insertCell(2);
-
-            cell1.innerHTML = productDescription;
-            cell2.innerHTML = quantidade;
-
             const precoProduto = produtoEncontrado.preco;
             const total = quantidade * precoProduto;
 
             const totalTudo = total;
             totalGeral += totalTudo;
 
-            cell3.innerHTML = `€ ${total.toFixed(2)}`;
+            cell3.textContent = `€ ${total.toFixed(2)}`;
 
             document.getElementById('productMesasDescription').value = '';
             document.getElementById('quantidadeMesasDescription').value = '';
