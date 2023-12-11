@@ -636,6 +636,14 @@ function editarTipoProduto() {
         return;
     }
 
+    // Verificar se a nova descrição já existe
+    const descricaoExistente = tiposProdutos.find(tipo => tipo.descricao === novaTipoProduto);
+
+    if (descricaoExistente) {
+        alert('Já existe um tipo de produto com essa descrição. Por favor, escolha uma descrição única.');
+        return;
+    }
+
     // Atualizar os detalhes do produto
     tiposProdutos[idTipoProduto].descricao = novaTipoProduto;
 
